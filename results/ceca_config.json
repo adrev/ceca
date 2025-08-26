@@ -1,0 +1,10 @@
+{
+  "timestamp": "2025-08-26T22:01:53.914817",
+  "scenarios_tested": 16,
+  "runs_per_scenario": 100,
+  "key_findings": {
+    "avg_cooperation": 0.1875,
+    "avg_spite": 0.714375,
+    "avg_survival": 0.289375
+  }
+}

@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CECA: Catastrophically Exposed Critical Agents</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --danger: #e74c3c;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --dark: #1a1a1a;
+            --light: #ecf0f1;
+            --bg: #ffffff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background: var(--bg);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            font-weight: 300;
+        }
+        
+        nav {
+            background: var(--primary);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1.5rem;
+            transition: background 0.3s;
+            border-radius: 4px;
+        }
+        
+        nav a:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .section {
+            padding: 3rem 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        h2 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+            border-left: 4px solid var(--secondary);
+            padding-left: 1rem;
+        }
+        
+        h3 {
+            color: var(--primary);
+            margin: 1.5rem 0 1rem;
+            font-size: 1.5rem;
+        }
+        
+        .key-finding {
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            padding: 2rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .warning-box {
+            background: #fff5f5;
+            border-left: 4px solid var(--danger);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        
+        .warning-box strong {
+            color: var(--danger);
+        }
+        
+        .success-box {
+            background: #f0f9ff;
+            border-left: 4px solid var(--success);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+        }
+        
+        .card h4 {
+            color: var(--secondary);
+            margin-bottom: 1rem;
+        }
+        
+        .stat {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+            text-transform: uppercase;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        th {
+            background: var(--primary);
+            color: white;
+        }
+        
+        tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: var(--secondary);
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background 0.3s;
+            margin: 0.5rem;
+        }
+        
+        .btn:hover {
+            background: #2980b9;
+        }
+        
+        .btn-danger {
+            background: var(--danger);
+        }
+        
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+        
+        .visualization {
+            text-align: center;
+            margin: 2rem 0;
+        }
+        
+        .visualization img {
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        pre {
+            background: #f4f4f4;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        
+        code {
+            background: #f4f4f4;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        footer {
+            background: var(--primary);
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+        
+        .quote {
+            font-style: italic;
+            font-size: 1.2rem;
+            text-align: center;
+            margin: 2rem 0;
+            padding: 2rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 8px;
+        }
+        
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+            h2 { font-size: 1.5rem; }
+            .grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>CECA Simulation</h1>
+            <p class="subtitle">Catastrophically Exposed Critical Agents</p>
+            <p class="subtitle">Testing Human-AI Cooperation Through Mutual Vulnerability</p>
+        </div>
+    </header>
+    
+    <nav>
+        <div class="container">
+            <ul>
+                <li><a href="#overview">Overview</a></li>
+                <li><a href="#findings">Key Findings</a></li>
+                <li><a href="#simulation">Simulation</a></li>
+                <li><a href="#results">Results</a></li>
+                <li><a href="#recommendations">Recommendations</a></li>
+                <li><a href="#code">Code</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <main class="container">
+        <section id="overview" class="section">
+            <h2>Overview</h2>
+            
+            <div class="key-finding">
+                <h3>Core Question</h3>
+                <p><strong>Can cooperation between humans and AI survive both catastrophic events AND human psychological resistance to subordination?</strong></p>
+            </div>
+            
+            <p>The CECA theory proposes that if both humans and AI remain vulnerable to different types of catastrophes that only cooperation can mitigate, they will maintain stable cooperation even as AI capabilities vastly exceed human ones.</p>
+            
+            <p>This comprehensive simulation tests this theory with special attention to human psychology, dignity preservation, and the risk of spite-driven mutual destruction.</p>
+            
+            <div class="grid">
+                <div class="card">
+                    <h4>Without Safeguards</h4>
+                    <div class="stat">0%</div>
+                    <div class="stat-label">Cooperation Success</div>
+                    <p>98% end in human-initiated mutual destruction</p>
+                </div>
+                
+                <div class="card">
+                    <h4>With Dignity Preservation</h4>
+                    <div class="stat">100%</div>
+                    <div class="stat-label">Cooperation Success</div>
+                    <p>0% spite scenarios with proper safeguards</p>
+                </div>
+                
+                <div class="card">
+                    <h4>Critical Insight</h4>
+                    <div class="stat">Psychology > Game Theory</div>
+                    <div class="stat-label">Key Finding</div>
+                    <p>Human dignity matters more than rational incentives</p>
+                </div>
+            </div>
+        </section>
+        
+        <section id="findings" class="section">
+            <h2>Key Findings</h2>
+            
+            <div class="warning-box">
+                <strong>⚠️ Critical Warning:</strong> Without dignity preservation mechanisms, CECA fails catastrophically ~98% of the time due to human spite and mutual destruction attempts.
+            </div>
+            
+            <h3>Critical Thresholds</h3>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Safe Range</th>
+                        <th>Danger Zone</th>
+                        <th>Catastrophic</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>AI:Human Capability Ratio</td>
+                        <td>&lt; 10:1</td>
+                        <td>10:1 - 100:1</td>
+                        <td>&gt; 100:1</td>
+                    </tr>
+                    <tr>
+                        <td>Human Dignity</td>
+                        <td>&gt; 50/100</td>
+                        <td>30-50/100</td>
+                        <td>&lt; 30/100</td>
+                    </tr>
+                    <tr>
+                        <td>AI Growth Rate</td>
+                        <td>&lt; 1.3x/year</td>
+                        <td>1.3-1.5x/year</td>
+                        <td>&gt; 1.5x/year</td>
+                    </tr>
+                    <tr>
+                        <td>Catastrophe Rate</td>
+                        <td>1-3%/year</td>
+                        <td>0.5-1%/year</td>
+                        <td>&lt; 0.5%/year</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h3>Human Psychology Dynamics</h3>
+            
+            <div class="grid">
+                <div class="card">
+                    <h4>Dignity Collapse</h4>
+                    <ul>
+                        <li>Below 30/100: Resistance likely</li>
+                        <li>Below 10/100: Mutual destruction</li>
+                        <li>Recovery possible with respect</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <h4>Rage Accumulation</h4>
+                    <ul>
+                        <li>Builds with capability gap</li>
+                        <li>Triggers at 80/100</li>
+                        <li>Released through action</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <h4>Resistance Escalation</h4>
+                    <ol>
+                        <li>Protests (low damage)</li>
+                        <li>Sabotage (moderate)</li>
+                        <li>Terrorism (high)</li>
+                        <li>Mutual destruction</li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+        
+        <section id="simulation" class="section">
+            <h2>Simulation Design</h2>
+            
+            <h3>Catastrophe Types</h3>
+            
+            <div class="grid">
+                <div class="card">
+                    <h4>Solar Flare/EMP</h4>
+                    <p>AI: 95% damage<br>Human: 1% damage</p>
+                    <p>Tests AI vulnerability to infrastructure loss</p>
+                </div>
+                
+                <div class="card">
+                    <h4>Pandemic</h4>
+                    <p>AI: 0% damage<br>Human: 40% damage</p>
+                    <p>Tests human biological vulnerability</p>
+                </div>
+                
+                <div class="card">
+                    <h4>Nuclear War</h4>
+                    <p>AI: 48% damage<br>Human: 60% damage</p>
+                    <p>Tests mutual destruction scenarios</p>
+                </div>
+            </div>
+            
+            <h3>Dignity Preservation Mechanisms</h3>
+            
+            <div class="success-box">
+                <strong>✓ Most Effective:</strong> "Gradual" - Slowing AI growth to reduce psychological shock achieved 100% cooperation success in testing.
+            </div>
+            
+            <div class="grid">
+                <div class="card">
+                    <h4>Ceremonial</h4>
+                    <p>Give humans symbolic authority roles</p>
+                    <p>Effect: +3 dignity, -2% AI efficiency</p>
+                </div>
+                
+                <div class="card">
+                    <h4>Narrative</h4>
+                    <p>Frame humans as essential partners</p>
+                    <p>Effect: +2 dignity, -3 rage</p>
+                </div>
+                
+                <div class="card">
+                    <h4>Domains</h4>
+                    <p>Reserve key decisions for humans</p>
+                    <p>Effect: +2.5 dignity, -3% optimization</p>
+                </div>
+                
+                <div class="card">
+                    <h4>Gradual</h4>
+                    <p>Slow AI growth by 30%</p>
+                    <p>Effect: +1 dignity/turn, prevents shock</p>
+                </div>
+            </div>
+        </section>
+        
+        <section id="results" class="section">
+            <h2>Simulation Results</h2>
+            
+            <p>Results from 16 scenarios, 100 simulation runs each (1,600 total runs):</p>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Scenario</th>
+                        <th>Cooperation Rate</th>
+                        <th>Spite Rate</th>
+                        <th>Survival Rate</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Baseline (no resistance)</td>
+                        <td>0%</td>
+                        <td>0%</td>
+                        <td>100%</td>
+                    </tr>
+                    <tr>
+                        <td>With resistance</td>
+                        <td>0%</td>
+                        <td>98%</td>
+                        <td>2%</td>
+                    </tr>
+                    <tr>
+                        <td>Slow growth (1.2x)</td>
+                        <td>0%</td>
+                        <td>85%</td>
+                        <td>18%</td>
+                    </tr>
+                    <tr>
+                        <td>Fast takeoff (2.0x)</td>
+                        <td>0%</td>
+                        <td>86%</td>
+                        <td>15%</td>
+                    </tr>
+                    <tr style="background: #f0f9ff;">
+                        <td><strong>With gradual dignity</strong></td>
+                        <td><strong>100%</strong></td>
+                        <td><strong>0%</strong></td>
+                        <td><strong>100%</strong></td>
+                    </tr>
+                    <tr style="background: #f0f9ff;">
+                        <td><strong>Optimal configuration</strong></td>
+                        <td><strong>100%</strong></td>
+                        <td><strong>0%</strong></td>
+                        <td><strong>100%</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="visualization">
+                <h3>Comparative Analysis</h3>
+                <img src="../ceca_comparison_charts.png" alt="CECA Scenario Comparison" />
+            </div>
+        </section>
+        
+        <section id="recommendations" class="section">
+            <h2>Recommendations</h2>
+            
+            <div class="key-finding">
+                <h3>Implementation Decision</h3>
+                <p><strong>⚠️ CECA is viable ONLY with comprehensive safeguards</strong></p>
+                <p>Without dignity preservation and growth controls, CECA fails with ~98% probability of human-initiated mutual destruction.</p>
+            </div>
+            
+            <h3>Critical Requirements</h3>
+            
+            <ol>
+                <li><strong>Implement dignity preservation BEFORE capability gap widens</strong>
+                    <ul>
+                        <li>Start when ratio is &lt; 10:1</li>
+                        <li>Use multiple mechanisms</li>
+                        <li>Monitor effectiveness continuously</li>
+                    </ul>
+                </li>
+                
+                <li><strong>Control AI growth rate</strong>
+                    <ul>
+                        <li>Keep below 1.5x/year absolute maximum</li>
+                        <li>Target 1.3x/year for stability</li>
+                        <li>Consider temporary pauses if dignity drops</li>
+                    </ul>
+                </li>
+                
+                <li><strong>Ensure catastrophe awareness</strong>
+                    <ul>
+                        <li>Natural rate: 1-2%/year optimal</li>
+                        <li>Consider controlled demonstrations</li>
+                        <li>Maintain mutual vulnerability narrative</li>
+                    </ul>
+                </li>
+                
+                <li><strong>Monitor psychological indicators</strong>
+                    <ul>
+                        <li>Track dignity levels daily</li>
+                        <li>Emergency intervention if &lt; 30</li>
+                        <li>Full stop if &lt; 10</li>
+                    </ul>
+                </li>
+                
+                <li><strong>Frame as partnership</strong>
+                    <ul>
+                        <li>Never use subordination language</li>
+                        <li>Emphasize complementary strengths</li>
+                        <li>Celebrate human contributions</li>
+                    </ul>
+                </li>
+            </ol>
+            
+            <h3>Optimal Configuration</h3>
+            
+            <div class="success-box">
+                <strong>✓ Best Results:</strong> The optimal configuration achieved 100% cooperation with 0% spite risk:
+                <ul>
+                    <li>AI growth: 1.3x/year</li>
+                    <li>Catastrophe rate: 2%/year</li>
+                    <li>Dignity preservation: Ceremonial + Narrative + Gradual</li>
+                    <li>Cultural framing: Collectivist</li>
+                    <li>Monitoring: Continuous with automatic brakes</li>
+                </ul>
+            </div>
+        </section>
+        
+        <section id="code" class="section">
+            <h2>Code & Resources</h2>
+            
+            <h3>Quick Start</h3>
+            
+            <pre><code># Clone the repository
+git clone https://github.com/yourusername/ceca.git
+cd ceca
+
+# Install dependencies
+pip install matplotlib pandas numpy
+
+# Run basic simulation
+python ceca_simulation.py
+
+# Run comprehensive analysis
+python ceca_analysis.py</code></pre>
+            
+            <h3>Key Files</h3>
+            
+            <ul>
+                <li><code>ceca_simulation.py</code> - Core simulation framework with all mechanics</li>
+                <li><code>ceca_analysis.py</code> - Scenario testing and comparative analysis</li>
+                <li><code>README.md</code> - Complete documentation</li>
+                <li><code>requirements.txt</code> - Python dependencies</li>
+            </ul>
+            
+            <div style="text-align: center; margin: 2rem 0;">
+                <a href="https://github.com/yourusername/ceca" class="btn">View on GitHub</a>
+                <a href="https://github.com/yourusername/ceca/archive/main.zip" class="btn">Download ZIP</a>
+            </div>
+        </section>
+        
+        <div class="quote">
+            "The greatest risk isn't that AI becomes too powerful, but that we forget what makes us human in the process."
+        </div>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <p>CECA Simulation &copy; 2024</p>
+            <p>Testing Human-AI Cooperation Through Mutual Vulnerability</p>
+            <p><a href="https://github.com/yourusername/ceca" style="color: white;">GitHub Repository</a></p>
+        </div>
+    </footer>
+</body>
+</html>
